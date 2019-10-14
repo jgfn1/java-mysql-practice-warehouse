@@ -20,21 +20,22 @@ public class UserInterface {
 	private static final int DISPLAY_CLIENTS = 4;
 	private static final int SHOW_MANUFACTURERS = 5;
 	private static final int SHOW_PRODUCTS = 6;
-	private static final int ASSIGN_PRICE = 7;
-	private static final int UNASSIGN_PRICE = 8;
-	private static final int GET_PRODUCT_BY_SUPPLIER = 9;
-	private static final int GET_SUPPLIER_BY_PRODUCT = 10;
-	private static final int PLACE_ORDER = 11;
-	private static final int MAKE_PAYMENT = 12;
-	private static final int GET_OUTSTANDING_CLIENTS = 13;
-	private static final int ACCEPT_SHIPMENT = 14;
-	private static final int GET_CLIENT_WAITLIST = 15;
-	private static final int GET_PRODUCT_WAITLIST = 16;
-	private static final int PLACE_ORDER_WITH_MANUFACTURER = 17;
-	private static final int DISPLAY_ORDERS_WITH_A_MANUFACTURER = 18;
-	private static final int GET_PRODUCTS_WITHOUT_MANUFACTURERS = 19;
-	private static final int GET_MANUFACTURERS_WITHOUT_PRODUCTS = 20;
-	private static final int HELP = 21;
+	private static final int SHOW_PRODUCTS_PRICES = 7;
+	private static final int ASSIGN_PRICE = 8;
+	private static final int UNASSIGN_PRICE = 9;
+	private static final int GET_PRODUCT_BY_SUPPLIER = 10;
+	private static final int GET_SUPPLIER_BY_PRODUCT = 11;
+	private static final int PLACE_ORDER = 12;
+	private static final int MAKE_PAYMENT = 13;
+	private static final int GET_OUTSTANDING_CLIENTS = 14;
+	private static final int ACCEPT_SHIPMENT = 15;
+	private static final int GET_CLIENT_WAITLIST = 16;
+	private static final int GET_PRODUCT_WAITLIST = 17;
+	private static final int PLACE_ORDER_WITH_MANUFACTURER = 18;
+	private static final int DISPLAY_ORDERS_WITH_A_MANUFACTURER = 19;
+	private static final int GET_PRODUCTS_WITHOUT_MANUFACTURERS = 20;
+	private static final int GET_MANUFACTURERS_WITHOUT_PRODUCTS = 21;
+	private static final int HELP = 22;
 
 	public static UserInterface instance() {
 		if (userInterface == null) {
@@ -90,9 +91,10 @@ public class UserInterface {
 		System.out.println("| " + DISPLAY_CLIENTS         + ".Display list of clients                             |");
 		System.out.println("| " + SHOW_MANUFACTURERS      + ".Display list of manufacturers                       |");
 		System.out.println("| " + SHOW_PRODUCTS           + ".Display list of products                            |");
+		System.out.println("| " + SHOW_PRODUCTS_PRICES    + ".Display list of available prices for products       |");
 		System.out.println("| " + ASSIGN_PRICE            + ".Assign a product to a manufacturer with a price     |");
 		System.out.println("| " + UNASSIGN_PRICE          + ".Unassign a product from a manufacturer              |");
-		System.out.println("| " + GET_PRODUCT_BY_SUPPLIER + ".Display a list of products for a manufacturer       |");
+		System.out.println("| " + GET_PRODUCT_BY_SUPPLIER + ".Display a list of products for a manufacturer      |");
 		System.out.println("| " + GET_SUPPLIER_BY_PRODUCT + ".Display a list of manufacturers for a product      |");
 		// System.out.println("| " + PLACE_ORDER             + ".Place an order                                     |");
 		// System.out.println("| " + MAKE_PAYMENT            + ".Make payment on behalf of a client                 |");
@@ -278,6 +280,23 @@ public class UserInterface {
 		}
 	}
 
+	public void showProductsPrices() {
+		ResultSet rs = mysql.query("SELECT p.name 'Product', p.category 'Category', pm.price 'Price' FROM products p NATURAL JOIN products_manufacturers pm;");
+		try{  
+			while(rs.next()){
+				System.out.println("Product: " + rs.getString("Product")+
+					"\n"+
+					"Category: " + rs.getString("Category")+
+					"\n"+
+					"Price: " + rs.getString("Price")+
+					"\n"
+				);
+			}
+		}catch(Exception e){ 
+			System.out.println(e);
+		}
+	}
+
 	// private void addOrder() {
 	// 	Order newOrder;
 	// 	boolean isAdded;
@@ -422,6 +441,9 @@ public class UserInterface {
 			case SHOW_PRODUCTS:
 				showProducts();
 				break;
+			case SHOW_PRODUCTS_PRICES:
+				showProductsPrices();
+				break;
 			case ASSIGN_PRICE:
 				assignPrice();
 				break;
@@ -461,7 +483,7 @@ public class UserInterface {
 			case GET_PRODUCTS_WITHOUT_MANUFACTURERS:
 				getProductsWithoutSuppliers();
 				break;
-				case GET_MANUFACTURERS_WITHOUT_PRODUCTS:
+			case GET_MANUFACTURERS_WITHOUT_PRODUCTS:
 				getSuppliersWithoutProducts();
 				break;
 			case HELP:
